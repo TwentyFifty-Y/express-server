@@ -19,6 +19,7 @@
   "homepage": "https://github.com/TwentyFifty-Y/express-server#readme",
   "dependencies": {
     "aws-sdk": "^2.1253.0",
+    "cors": "^2.8.5",
     "express": "^4.18.2"
   },
   "devDependencies": {
