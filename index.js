@@ -1,26 +1,22 @@
-// Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
-// Set the region 
-AWS.config.update({ region: 'eu-central-1' });
+const express = require('express');
+const cors = require('cors');
 
-// Create the DynamoDB service object
-var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-function searchById(id) {
-    return params = {
-        TableName: 'ViewsInfo',
-        Key: {
-          'view_id': { S: id }
-        },
-        ProjectionExpression: 'info'
-      };
-}
+const PORT = 3000;
 
-// Call DynamoDB to read the item from the table
-ddb.getItem(searchById('view1GlobalAnnual'), function (err, data) {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log(data.Item.info.S);
-  }
+const dynamoConnection = require('./services/dynamoConnection');
+
+app.get('/view1', async (req, res) => {
+    try {
+        res.status(200).send(JSON.parse(await dynamoConnection.getView1ById(req.query.id)));
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
