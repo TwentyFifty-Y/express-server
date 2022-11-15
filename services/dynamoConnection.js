@@ -1,7 +1,15 @@
+require('dotenv').config();
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
-AWS.config.update({ region: 'eu-central-1' });
+AWS.config.update({
+    maxRetries: 3,
+    httpOptions: {timeout: 30000, connectTimeout: 5000},
+    region: 'eu-central-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  });
 
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
