@@ -13,7 +13,7 @@ app.get('/view1', async (req, res) => {
     try {
         res.status(200).send(JSON.parse(await dynamoConnection.getView1ById(req.query.id)));
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).send(err);
     }
 })
 
