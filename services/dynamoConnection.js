@@ -5,11 +5,11 @@ var AWS = require('aws-sdk');
 // Set the region 
 AWS.config.update({
     maxRetries: 3,
-    httpOptions: {timeout: 30000, connectTimeout: 5000},
+    httpOptions: { timeout: 30000, connectTimeout: 5000 },
     region: 'eu-central-1',
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  });
+});
 
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
@@ -38,8 +38,8 @@ function searchById(id) {
 async function getView1ById(id) {
     return new Promise((resolve, reject) => {
         ddb.getItem(searchById(id), function (err, data) {
-            if (err) {
-                reject(err);
+            if (!data.Item) {
+                reject("No data found for id: " + id + ". Please check the id and try again.");
             } else {
                 resolve(data.Item.info.S);
             }
