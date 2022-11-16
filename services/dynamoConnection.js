@@ -35,7 +35,7 @@ function searchById(id) {
 // });
 
 //A function that searches for a view_id and returns the info if successful
-async function getView1ById(id) {
+async function getViewById(id) {
     return new Promise((resolve, reject) => {
         ddb.getItem(searchById(id), function (err, data) {
             if (!data.Item) {
@@ -48,5 +48,5 @@ async function getView1ById(id) {
 }
 
 module.exports = {
-    getView1ById
+    getViewById
 }

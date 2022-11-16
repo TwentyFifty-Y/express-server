@@ -8,10 +8,12 @@ app.use(express.json());
 const PORT = 3000;
 
 const dynamoConnection = require('./services/dynamoConnection');
+const helper = require('./services/helper');
 
-app.get('/view1', async (req, res) => {
+app.get('/views', async (req, res) => {
     try {
-        res.status(200).send(JSON.parse(await dynamoConnection.getView1ById(req.query.id)));
+        helper.checkId(req.query.id);
+        res.status(200).send(JSON.parse(await dynamoConnection.getViewById(req.query.id)));
     } catch (err) {
         res.status(500).send(err);
     }
