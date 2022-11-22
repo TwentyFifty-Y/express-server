@@ -25,6 +25,55 @@ function searchById(id) {
     };
 }
 
+function searchUser(id) {
+    return params = {
+        TableName: 'Users',
+        Key: {
+            'user_id': { S: id }
+        }
+    };
+}
+
+async function getUserbyId(id) {
+    return new Promise((resolve, reject) => {
+        ddb.getItem(searchUser(id), function (err, data) {
+            if (!data.Item) {
+                reject("No data found for id: " + id + ". Please check the id and try again.");
+            } else {
+                resolve(data.Item);
+            }
+        });
+    });
+}
+
+//function pushUserToDB()
+function putById(userObject){
+    return params = {
+        TableName: "Users",
+        Item: {
+            "user_id": {S: userObject.id},
+            "email": {S: userObject.email},
+            "password": {S: userObject.password},
+            "username": {S: userObject.username}
+        
+        },
+      };
+}
+async function putUserById(userObject){
+    return new Promise((resolve, reject)=> {
+      ddb.putItem(putById(userObject), function(err, data) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          console.log("Success", data);
+          resolve(data)
+        }
+      });
+});
+}
+
+//function deleteUser()
+
 // // Call DynamoDB to read the item from the table
 // ddb.getItem(searchById('view1GlobalAnnual'), function (err, data) {
 //     if (err) {
@@ -48,5 +97,7 @@ async function getViewById(id) {
 }
 
 module.exports = {
-    getViewById
+    getUserbyId,
+    getViewById,
+    putUserById  
 }
