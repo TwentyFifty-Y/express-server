@@ -14,20 +14,21 @@ AWS.config.update({
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-function searchUser(id) {
+
+function createSearchUserParam(username) {
     return params = {
         TableName: 'Users',
         Key: {
-            'user_id': { S: id }
+            'username': { S: username }
         }
     };
 }
 
-async function getUserbyId(id) {
+async function getUserByUsername(username) {
     return new Promise((resolve, reject) => {
-        ddb.getItem(searchUser(id), function (err, data) {
-            if (!data.Item) {
-                reject("No data found for id: " + id + ". Please check the id and try again.");
+        ddb.getItem(createSearchUserParam(username), function (err, data) {
+            if (!data) {
+                reject("User not found!");
             } else {
                 resolve(data.Item);
             }
@@ -36,29 +37,28 @@ async function getUserbyId(id) {
 }
 
 //function pushUserToDB()
-function putById(userObject){
+function createPostUserParams(userObject) {
     return params = {
         TableName: "Users",
         Item: {
-            "user_id": {S: userObject.id},
-            "email": {S: userObject.email},
-            "password": {S: userObject.password},
-            "username": {S: userObject.username}
-        
+            "username": { S: userObject.username },
+            "email": { S: userObject.email },
+            "password": { S: userObject.password },
+            "id": { S: userObject.id },
         },
-      };
+    };
 }
-async function putUserById(userObject){
-    return new Promise((resolve, reject)=> {
-      ddb.putItem(putById(userObject), function(err, data) {
-        if (err) {
-          console.log("Error", err);
-        } else {
-          console.log("Success", data);
-          resolve(data)
-        }
-      });
-});
+async function postUser(userObject) {
+    return new Promise((resolve, reject) => {
+        ddb.putItem(createPostUserParams(userObject), function (err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data);
+                resolve(data)
+            }
+        });
+    });
 }
 
 //function deleteUser()
@@ -97,7 +97,7 @@ async function getViewById(id) {
 }
 
 module.exports = {
-    getUserbyId,
+    getUserByUsername,
     getViewById,
-    putUserById  
+    postUser
 }
