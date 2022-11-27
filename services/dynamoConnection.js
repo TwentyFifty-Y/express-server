@@ -14,17 +14,6 @@ AWS.config.update({
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-//Return a params variable with the id set as the first parameter
-function searchById(id) {
-    return params = {
-        TableName: 'ViewsInfo',
-        Key: {
-            'view_id': { S: id }
-        },
-        ProjectionExpression: 'info'
-    };
-}
-
 function searchUser(id) {
     return params = {
         TableName: 'Users',
@@ -82,6 +71,17 @@ async function putUserById(userObject){
 //         console.log(data.Item.info.S);
 //     }
 // });
+
+//Return a params variable with the id set as the first parameter
+function searchById(id) {
+    return params = {
+        TableName: 'ViewsInfo',
+        Key: {
+            'view_id': { S: id }
+        },
+        ProjectionExpression: 'info'
+    };
+}
 
 //A function that searches for a view_id and returns the info if successful
 async function getViewById(id) {
