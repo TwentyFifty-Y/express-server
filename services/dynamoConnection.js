@@ -61,16 +61,7 @@ async function postUser(userObject) {
     });
 }
 
-//function deleteUser()
 
-// // Call DynamoDB to read the item from the table
-// ddb.getItem(searchById('view1GlobalAnnual'), function (err, data) {
-//     if (err) {
-//         console.log("Error", err);
-//     } else {
-//         console.log(data.Item.info.S);
-//     }
-// });
 
 //Return a params variable with the id set as the first parameter
 function searchById(id) {
@@ -87,7 +78,7 @@ function searchById(id) {
 async function getViewById(id) {
     return new Promise((resolve, reject) => {
         ddb.getItem(searchById(id), function (err, data) {
-            if (!data.Item) {
+            if (! data) {
                 reject("No data found for id: " + id + ". Please check the id and try again.");
             } else {
                 resolve(data.Item.info.S);

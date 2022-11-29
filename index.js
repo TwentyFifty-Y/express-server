@@ -24,8 +24,6 @@ const BasicStrategy = require('passport-http').BasicStrategy
 
 passport.use(new BasicStrategy(
     async function (username, password, done) {
-        // console.log("username: " + username);
-        // console.log("password: " + password);
 
         // search matching username from our user storage
         const user = await dynamoConnection.getUserByUsername(username);
@@ -155,13 +153,7 @@ app.post(
         return res.json({ token });
     })
 
-// app.post('/user', async (req,res, next)=> {
-//     try {
-//         res.status(200).send(await dynamoConnection.putUserById())
-//     }catch (err){
-//         next(err)
-//     }
-// })
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
