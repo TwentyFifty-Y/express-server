@@ -54,13 +54,13 @@ const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
-//  jwtSecretKey = process.env.JWTKEY
-let jwtSecretKey = null;
-if (process.env.JWTKEY === undefined) {
-    jwtSecretKey = require('./jwt-key.json').secret;
-} else {
-    jwtSecretKey = process.env.JWTKEY;
-}
+jwtSecretKey = process.env.JWTKEY
+// let jwtSecretKey = null;
+// if (process.env.JWTKEY === undefined) {
+//     jwtSecretKey = require('./jwt-key.json').secret;
+// } else {
+//     jwtSecretKey = process.env.JWTKEY;
+// }
 
 let options = {}
 
