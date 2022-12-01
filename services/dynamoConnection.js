@@ -61,6 +61,28 @@ async function postUser(userObject) {
     });
 }
 
+// function deleteUser()
+function createDeleteUserParam(username) {
+    return params = {
+        TableName: 'Users',
+        Key: {
+            'username': { S: username }
+        }
+    };
+}
+async function deleteUser(username) {
+    return new Promise((resolve, reject) => {
+        ddb.deleteItem(createDeleteUserParam(username), function (err, data) {
+            if (err) {
+                console.log("Error in deleting user", err);
+            } else {
+                console.log("Success in deleting user", data);
+                resolve(data)
+            }
+        });
+    });
+}
+
 
 
 //Return a params variable with the id set as the first parameter
@@ -90,5 +112,6 @@ async function getViewById(id) {
 module.exports = {
     getUserByUsername,
     getViewById,
-    postUser
+    postUser,
+    deleteUser
 }

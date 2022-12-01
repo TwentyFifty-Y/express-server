@@ -102,13 +102,13 @@ app.get('/user', async (req, res) => {
         res.status(500).send(err);
     }
 })
+
 app.post('/register', async (req, res) => {                   // this one won't be protected, as it has to be visible by everybody
     console.log(req.body);
 
     // create hash of the password and
     const salt = bcrypt.genSaltSync(6);
     const passwordHash = bcrypt.hashSync(req.body.password, salt);
-
 
     const newUser = {
         id: uuidv4(),
@@ -125,13 +125,9 @@ app.post('/register', async (req, res) => {                   // this one won't 
 
     // res.send('okay')
     res.status(201).json({ status: "created" });
-
 })
 
-app.post(
-    '/jwtLogin',
-    passport.authenticate('basic', { session: false }),
-    (req, res) => {
+app.post('/jwtLogin', passport.authenticate('basic', { session: false }), (req, res) => {
         const body = {
             id: req.user.id,
             email: req.user.email
@@ -153,6 +149,14 @@ app.post(
         return res.json({ token });
     })
 
+app.delete('/user', async (req, res) => {
+    try {
+        helper.checkId(req.query.username);
+        res.status(200).send(await dynamoConnection.deleteUser(req.query.username));
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
