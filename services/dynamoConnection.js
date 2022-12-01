@@ -48,6 +48,7 @@ function createPostUserParams(userObject) {
         },
     };
 }
+
 async function postUser(userObject) {
     return new Promise((resolve, reject) => {
         ddb.putItem(createPostUserParams(userObject), function (err, data) {
@@ -62,6 +63,29 @@ async function postUser(userObject) {
 }
 
 //function deleteUser()
+function createDeleteUserParams(userObject) {
+    return params = {
+        TableName: "Users",
+        Item: {
+            "username": { S: userObject.username },
+            "email": { S: userObject.email },
+            "password": { S: userObject.password },
+            "id": { S: userObject.id },
+        },
+    };
+}
+async function deleteUser(userObject) {
+    return new Promise((resolve, reject) => {
+        ddb.deleteItem(createDeleteUserParams(userObject), function (err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data);
+                resolve(data)
+            }
+        });
+    });
+}
 
 // // Call DynamoDB to read the item from the table
 // ddb.getItem(searchById('view1GlobalAnnual'), function (err, data) {
@@ -99,5 +123,6 @@ async function getViewById(id) {
 module.exports = {
     getUserByUsername,
     getViewById,
-    postUser
+    postUser, 
+    deleteUser
 }

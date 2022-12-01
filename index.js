@@ -104,13 +104,13 @@ app.get('/user', async (req, res) => {
         res.status(500).send(err);
     }
 })
+
 app.post('/register', async (req, res) => {                   // this one won't be protected, as it has to be visible by everybody
     console.log(req.body);
 
     // create hash of the password and
     const salt = bcrypt.genSaltSync(6);
     const passwordHash = bcrypt.hashSync(req.body.password, salt);
-
 
     const newUser = {
         id: uuidv4(),
@@ -127,7 +127,6 @@ app.post('/register', async (req, res) => {                   // this one won't 
 
     // res.send('okay')
     res.status(201).json({ status: "created" });
-
 })
 
 app.post(
@@ -154,6 +153,14 @@ app.post(
 
         return res.json({ token });
     })
+
+app.delete('/delete', async (req,res, next)=> {
+    try {
+        res.status(200).send(await dynamoConnection.deleteUser())
+    } catch (err){
+        next(err)
+    }
+})
 
 // app.post('/user', async (req,res, next)=> {
 //     try {
