@@ -130,11 +130,12 @@ app.post('/register', async (req, res) => {                   // this one won't 
 app.post('/jwtLogin', passport.authenticate('basic', { session: false }), (req, res) => {
         const body = {
             id: req.user.id,
-            email: req.user.email
+            email: req.user.email,
+            username: req.user.username
         };
 
         const payload = {
-            user: body
+            user: body,
         };
 
         const options = {
