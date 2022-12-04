@@ -100,10 +100,10 @@ function searchById(id) {
 async function getViewById(id) {
     return new Promise((resolve, reject) => {
         ddb.getItem(searchById(id), function (err, data) {
-            if (! data) {
+            try {
+                resolve(data.Item.info.S)
+            } catch (error) {
                 reject("No data found for id: " + id + ". Please check the id and try again.");
-            } else {
-                resolve(data.Item.info.S);
             }
         });
     });
