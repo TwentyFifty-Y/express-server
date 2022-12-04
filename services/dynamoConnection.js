@@ -103,7 +103,7 @@ async function getViewById(id) {
             try {
                 resolve(data.Item.info.S)
             } catch (error) {
-                reject("No data found for id: " + id + ". Please check the id and try again.");
+                reject(`The following error ocurred while looking for the view_id: ${id}. \n${error}`);
             }
         });
     });
