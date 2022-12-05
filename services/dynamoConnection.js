@@ -83,8 +83,6 @@ async function deleteUser(username) {
     });
 }
 
-
-
 //Return a params variable with the id set as the first parameter
 function searchById(id) {
     return params = {
@@ -113,5 +111,5 @@ module.exports = {
     getUserByUsername,
     getViewById,
     postUser,
-    deleteUser
+    deleteUser,
 }

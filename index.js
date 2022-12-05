@@ -34,11 +34,13 @@ passport.use(new BasicStrategy(
             if (bcrypt.compareSync(password, user.password.S)) {
                 done(null, user)
             } else {
-                done(null, false)
+                console.log("Password not found")
+                done(null, false, { message:"HTTP Basic password not found" })
             }
         } else {
             // reject the request
-            done(null, false);
+            console.log("Username not found")
+            done(null, false, { message: "HTTP Basic username not found" });
         }
     }
 ));
@@ -53,47 +55,28 @@ const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
 jwtSecretKey = process.env.JWTKEY
-// let jwtSecretKey = null;
-// if (process.env.JWTKEY === undefined) {
-//     jwtSecretKey = require('./jwt-key.json').secret;
-// } else {
-//     jwtSecretKey = process.env.JWTKEY;
-// }
 
 let options = {}
 
 /* Configure the passport-jwt module to expect JWT
    in headers from Authorization field as Bearer token */
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-
-/* This is the secret signing key.
-   You should NEVER store it in code  */
 options.secretOrKey = jwtSecretKey;
+
+// passport.use(new JwtStrategy(options, function (jwt_payload, done) {
+//     console.log("Processing JWT payload for token content:");
+//     console.log(jwt_payload);
+// }));
 
 passport.use(new JwtStrategy(options, function (jwt_payload, done) {
     console.log("Processing JWT payload for token content:");
     console.log(jwt_payload);
-    /* Here you could do some processing based on the JWT payload.
-    For example check if the key is still valid based on expires property.
-    */
-    const now = Date.now() / 1000;
-    if (jwt_payload.exp > now) {
-        done(null, jwt_payload.user);
-    }
-    else {// expired
-        done(null, false);
-    }
 }));
 
-app.get('/views', async (req, res) => {
-    try {
-        helper.checkId(req.query.id);
-        res.status(200).send(JSON.parse(await dynamoConnection.getViewById(req.query.id)));
-    } catch (err) {
-        res.status(500).send(err);
-    }
-})
-
+/*********************************************
+ * User sign up and login
+ * User deletion
+ ********************************************/
 app.get('/user', async (req, res) => {
     try {
         helper.checkId(req.query.username);
@@ -103,10 +86,10 @@ app.get('/user', async (req, res) => {
     }
 })
 
-app.post('/register', async (req, res) => {                   // this one won't be protected, as it has to be visible by everybody
+app.post('/register', async (req, res) => {
     console.log(req.body);
 
-    // create hash of the password and
+    // create hash of the password
     const salt = bcrypt.genSaltSync(6);
     const passwordHash = bcrypt.hashSync(req.body.password, salt);
 
@@ -120,7 +103,6 @@ app.post('/register', async (req, res) => {                   // this one won't 
     //users.push(newUser);
     console.log(newUser);
 
-    //uhhh
     await dynamoConnection.postUser(newUser)
 
     // res.send('okay')
@@ -142,18 +124,29 @@ app.post('/jwtLogin', passport.authenticate('basic', { session: false }), (req, 
             expiresIn: '1d'
         }
 
-        /* Sign the token with payload, key and options.
-           Detailed documentation of the signing here:
-           https://github.com/auth0/node-jsonwebtoken#readme */
+        /* Sign the token with payload, key and options. */
         const token = jwt.sign(payload, jwtSecretKey, options);
 
         return res.json({ token });
     })
 
+
 app.delete('/user', async (req, res) => {
     try {
         helper.checkId(req.query.username);
         res.status(200).send(await dynamoConnection.deleteUser(req.query.username));
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
+/*********************************************
+ * Handling data for views
+ ********************************************/
+app.get('/views', async (req, res) => {
+    try {
+        helper.checkId(req.query.id);
+        res.status(200).send(JSON.parse(await dynamoConnection.getViewById(req.query.id)));
     } catch (err) {
         res.status(500).send(err);
     }
