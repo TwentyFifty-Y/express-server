@@ -14,11 +14,9 @@ const PORT = 3000;
 const dynamoConnection = require('./services/dynamoConnection');
 const helper = require('./services/helper');
 
-/*********************************************
+/*******************************
  * HTTP Basic Authentication
- * Passport module used
- * http://www.passportjs.org/packages/passport-http/
- ********************************************/
+ *******************************/
 const passport = require('passport');
 const BasicStrategy = require('passport-http').BasicStrategy
 
@@ -45,11 +43,9 @@ passport.use(new BasicStrategy(
     }
 ));
 
-/*********************************************
+/************************
  * JWT authentication
- * Passport module is used, see documentation
- * http://www.passportjs.org/packages/passport-jwt/
- ********************************************/
+ ************************/
 const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -58,25 +54,18 @@ jwtSecretKey = process.env.JWTKEY
 
 let options = {}
 
-/* Configure the passport-jwt module to expect JWT
-   in headers from Authorization field as Bearer token */
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 options.secretOrKey = jwtSecretKey;
-
-// passport.use(new JwtStrategy(options, function (jwt_payload, done) {
-//     console.log("Processing JWT payload for token content:");
-//     console.log(jwt_payload);
-// }));
 
 passport.use(new JwtStrategy(options, function (jwt_payload, done) {
     console.log("Processing JWT payload for token content:");
     console.log(jwt_payload);
 }));
 
-/*********************************************
+/***************************
  * User sign up and login
  * User deletion
- ********************************************/
+ ***************************/
 app.get('/user', async (req, res) => {
     try {
         helper.checkId(req.query.username);
@@ -140,9 +129,9 @@ app.delete('/user', async (req, res) => {
     }
 })
 
-/*********************************************
+/****************************
  * Handling data for views
- ********************************************/
+ ****************************/
 app.get('/views', async (req, res) => {
     try {
         helper.checkId(req.query.id);
@@ -151,6 +140,7 @@ app.get('/views', async (req, res) => {
         res.status(500).send(err);
     }
 })
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
