@@ -130,10 +130,33 @@ async function postCustomViews(userId, json) {
     });
 }
 
+function searchByUserId(id) {
+    return params = {
+        TableName: 'UserCustomView',
+        Key: {
+            'user_id': { S: id }
+        },
+        ProjectionExpression: 'customViews'
+    };
+}
+
+async function getCustomViewsById(id) {
+    return new Promise((resolve, reject) => {
+        ddb.getItem(searchByUserId(id), function (err, data) {
+            try {
+                resolve(data.Item.customViews.S)
+            } catch (err) {
+                reject(`The following error ocurred while looking for the view_id: ${id}. \n${err}`);
+            }
+        });
+    });
+}
+
 module.exports = {
     getUserByUsername,
     getViewById,
     postUser,
     deleteUser,
     postCustomViews,
+    getCustomViewsById
 }
