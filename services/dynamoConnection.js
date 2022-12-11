@@ -107,9 +107,33 @@ async function getViewById(id) {
     });
 }
 
+function createCustomViewsParams(userId, json) {
+    console.log('Creating params for custom views')
+    return params = {
+        TableName: "UserCustomView",
+        Item: {
+            "user_id": { S: userId },
+            "customViews": { S: json }
+        },
+    };
+}
+
+async function postCustomViews(userId, json) {
+    return new Promise((resolve, reject) => {
+        ddb.putItem(createCustomViewsParams(userId, json), function (err, data) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve("Uploaded customs views to user id: " + userId + "\n" + json)
+            }
+        });
+    });
+}
+
 module.exports = {
     getUserByUsername,
     getViewById,
     postUser,
     deleteUser,
+    postCustomViews,
 }
