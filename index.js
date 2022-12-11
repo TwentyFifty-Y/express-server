@@ -154,13 +154,12 @@ app.post('/custom-views', async (req, res) => {
 
 app.get('/custom-views', async (req, res) => {
     try {
-        helper.checkId(req.body.id);
-        res.status(200).send(JSON.parse(await dynamoConnection.getCustomViewsById(req.body.id)));
+        helper.checkId(req.query.id);
+        res.status(200).send(JSON.parse(await dynamoConnection.getCustomViewsById(req.query.id)));
     } catch (err) {
         res.status(500).send(err);
     }
 })
-
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
