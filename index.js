@@ -1,4 +1,6 @@
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const bodyParser = require('body-parser')
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
@@ -33,7 +35,7 @@ passport.use(new BasicStrategy(
                 done(null, user)
             } else {
                 console.log("Password not found")
-                done(null, false, { message:"HTTP Basic password not found" })
+                done(null, false, { message: "HTTP Basic password not found" })
             }
         } else {
             // reject the request
@@ -99,25 +101,25 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/jwtLogin', passport.authenticate('basic', { session: false }), (req, res) => {
-        const body = {
-            id: req.user.id,
-            email: req.user.email,
-            username: req.user.username
-        };
+    const body = {
+        id: req.user.id,
+        email: req.user.email,
+        username: req.user.username
+    };
 
-        const payload = {
-            user: body,
-        };
+    const payload = {
+        user: body,
+    };
 
-        const options = {
-            expiresIn: '1d'
-        }
+    const options = {
+        expiresIn: '1d'
+    }
 
-        /* Sign the token with payload, key and options. */
-        const token = jwt.sign(payload, jwtSecretKey, options);
+    /* Sign the token with payload, key and options. */
+    const token = jwt.sign(payload, jwtSecretKey, options);
 
-        return res.json({ token });
-    })
+    return res.json({ token });
+})
 
 
 app.delete('/user', async (req, res) => {
@@ -161,6 +163,20 @@ app.get('/custom-views', async (req, res) => {
     }
 })
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.get("/", function (req, res) {
+    res.send("hello world");
 });
+
+https
+    .createServer(
+        {
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.cert"),
+        },
+        app
+    )
+    .listen(3000, function () {
+        console.log(
+            "Example app listening on port 3000! Go to https://localhost:3000/"
+        );
+    });
