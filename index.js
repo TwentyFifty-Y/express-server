@@ -167,11 +167,11 @@ app.get("/", function (req, res) {
     res.send("hello world");
 });
 
-const https_options = {
-    ca: fs.readFileSync("ca_bundle.crt"),
-    key: fs.readFileSync("private.key"),
-    cert: fs.readFileSync("certificate.crt")
-   };
+// const https_options = {
+//     ca: fs.readFileSync("ca_bundle.crt"),
+//     key: fs.readFileSync("private.key"),
+//     cert: fs.readFileSync("certificate.crt")
+//    };
 
 // https
 //     .createServer(https_options, app)
