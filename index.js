@@ -167,14 +167,14 @@ app.get("/", function (req, res) {
     res.send("hello world");
 });
 
+const https_options = {
+    ca: fs.readFileSync("ca_bundle.crt"),
+    key: fs.readFileSync("private.key"),
+    cert: fs.readFileSync("certificate.crt")
+   };
+
 https
-    .createServer(
-        {
-            key: fs.readFileSync("private.key"),
-            cert: fs.readFileSync("certificate.crt"),
-        },
-        app
-    )
+    .createServer(https_options, app)
     .listen(3000, function () {
         console.log(
             "Example app listening on port 3000! Go to https://localhost:3000/"

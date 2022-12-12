@@ -106,3 +106,4 @@ dist
 # Server certificate and key
 certificate.crt
 private.key
+ca_bundle.crt
